@@ -9,7 +9,8 @@ jeu.o: jeu.c jeu.h grille.h
 grille.o: grille.c
 	gcc -g -Wall -c grille.c
 	
-
-
+archive: *
+    tar -zcvf archive.tar.xz
+    
 clean:
 	rm *.o main
