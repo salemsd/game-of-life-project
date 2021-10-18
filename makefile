@@ -9,8 +9,11 @@ jeu.o: jeu.c jeu.h grille.h
 grille.o: grille.c
 	gcc -g -Wall -c grille.c
 	
-archive: *
-    tar -zcvf archive.tar.xz
-    
+dist:
+	tar -Jcvf archive.tar.xz Doxyfile makefile *.c *.h
+
+docs:
+	@doxygen ./Doxyfile
+
 clean:
 	rm *.o main
