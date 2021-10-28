@@ -29,3 +29,36 @@ void copie_grille (grille gs, grille gd){
 	for (i=0; i<gs.nbl; ++i) for (j=0; j<gs.nbc; ++j) gd.cellules[i][j] = gs.cellules[i][j];
 	return;	
 }
+
+void alloue_grille (int l, int c, grille* g)
+{
+	int i, j;
+	g->nbl = l;
+	g->nbc = c;
+	g->cellules = malloc(g->nbl * sizeof(int*));
+
+	for (i = 0; i < g->nbl; i++)
+    {
+		g->cellules[i] = malloc(g->nbc * sizeof(int));
+    }
+
+    for (i = 0; i < g->nbl; i++)
+    {
+        for (j = 0; j < g->nbc; j++)
+        {
+            g->cellules[i][j] = 0;
+        }
+    }
+
+}
+
+void libere_grille (grille* g)
+{
+    int i;
+
+    for (i = 0; i < g->nbl; i++)
+    {
+		free(g->cellules[i]);
+    }
+    free(g->cellules);
+}

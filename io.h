@@ -5,19 +5,28 @@
 #include "grille.h"
 #include "jeu.h"
 
-// affichage d'un trait horizontal
+/// @file
+
+/// @brief Affichage d'un trait horizontal
+/// @param c La longueur du trait
 void affiche_trait (int c);
 
-// affichage d'une ligne de la grille
+/// @brief Affichage d'une ligne de la grille
+/// @param c Longueur de la ligne
+/// @param ligne Tableau d'entiers qui représente la ligne
 void affiche_ligne (int c, int* ligne);
 
-// affichage d'une grille
+/// @brief Affichage d'une grille
+/// @param g La grille à afficher
 void affiche_grille (grille g);
 
-// effacement d'une grille
+/// @brief Effacement d'une grille
+/// @param g La grille à effacer
 void efface_grille (grille g);
 
-// debute le jeu
+/// @brief Débute le jeu
+/// @param g Pointeur de type grille vers la grille g
+/// @param gc Pointeur de type grille vers la grille gc @see evolue
 void debut_jeu(grille *g, grille *gc);
 
 #endif

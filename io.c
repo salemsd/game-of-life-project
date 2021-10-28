@@ -43,6 +43,30 @@ void debut_jeu(grille *g, grille *gc){
 				affiche_grille(*g);
 				break;
 			}
+			case 'n' :
+			{ // touche "n" pour entrer le nom d'une nouvelle grille
+			    int length = 256;
+    			char * nomGrille = malloc(length * sizeof(char));
+    			int cpt = 0;
+				char c2;
+    			c2 = getchar();
+				printf("> ");
+    			while(c2 != '\n')
+    			{
+        			nomGrille[cpt++] = c2;
+        			if (cpt == length)
+        			{
+    	    			length += 256;
+            			nomGrille = realloc(nomGrille, length);
+        			}
+        			c2 = getchar();
+    			}
+    			nomGrille[cpt] = '\0';
+
+				init_grille_from_file(nomGrille, g);
+				free(nomGrille);
+				break;
+			}
 			default : 
 			{ // touche non traitée
 				printf("\n\e[1A");
