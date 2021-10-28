@@ -5,7 +5,8 @@
 #include "grille.h"
 #include "jeu.h"
 
-/// @file
+/// @file io.h
+/// @brief Définition des fonctions de base avant le jeu
 
 /// @brief Affichage d'un trait horizontal
 /// @param c La longueur du trait

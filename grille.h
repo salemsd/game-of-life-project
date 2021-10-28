@@ -5,7 +5,8 @@
 #include <stdio.h>
 #include <assert.h>
 
-/// @file
+/// @file grille.h
+/// @brief Définitions de toutes les fonctions en rapport avec la grille
 
 /// @brief Structure grille
 /// @param nbl Nombre de lignes
