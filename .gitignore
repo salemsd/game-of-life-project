@@ -2,3 +2,4 @@
 *.o
 *.tar.xz
 html/
+.vscode/
