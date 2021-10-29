@@ -49,8 +49,8 @@ void debut_jeu(grille *g, grille *gc){
     			char * nomGrille = malloc(length * sizeof(char));
     			int cpt = 0;
 				char c2;
-    			c2 = getchar();
-				printf("> ");
+    			printf("Indiquer le chemin du fichier et son nom: ");
+				c2 = getchar();
     			while(c2 != '\n')
     			{
         			nomGrille[cpt++] = c2;
@@ -63,8 +63,12 @@ void debut_jeu(grille *g, grille *gc){
     			}
     			nomGrille[cpt] = '\0';
 
+				libere_grille(g);
 				init_grille_from_file(nomGrille, g);
 				free(nomGrille);
+				libere_grille(gc);
+				alloue_grille(g->nbl, g->nbc, gc);
+
 				break;
 			}
 			default : 

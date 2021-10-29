@@ -46,7 +46,7 @@ void alloue_grille (int l, int c, grille* g)
     {
         for (j = 0; j < g->nbc; j++)
         {
-            g->cellules[i][j] = 0;
+            set_morte(i, j, *g);
         }
     }
 

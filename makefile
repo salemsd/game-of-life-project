@@ -9,9 +9,8 @@ jeu.o: jeu.c jeu.h grille.h
 grille.o: grille.c
 	gcc -g -Wall -c grille.c
 	
-version := $(shell git describe --abbrev=0)
 dist:
-	tar -Jcvf SaoudiSalem-GoL-$(version).tar.xz Doxyfile makefile *.c *.h
+	tar -Jcvf SaoudiSalem-GoL-1.0.tar.xz Doxyfile makefile *.c *.h
 
 docs:
 	@doxygen ./Doxyfile
