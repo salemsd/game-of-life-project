@@ -14,6 +14,7 @@ int compte_voisins_vivants (int i, int j, grille g){
 	return v; 
 }
 
+
 void evolue (grille *g, grille *gc){
 	copie_grille (*g,*gc); // copie temporaire de la grille
 	int i,j,l=g->nbl, c = g->nbc,v;
@@ -32,6 +33,5 @@ void evolue (grille *g, grille *gc){
 			}
 		}
 	}
-
 	return;
 }

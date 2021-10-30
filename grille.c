@@ -62,3 +62,4 @@ void libere_grille (grille* g)
     }
     free(g->cellules);
 }
+
