@@ -15,9 +15,11 @@ void affiche_ligne (int c, int* ligne){
 	return;
 }
 
+int cptEvo = 0;
 void affiche_grille (grille g){
 	int i, l=g.nbl, c=g.nbc;
 	printf("\n");
+	printf("Temps d'évolution: %d\n", cptEvo);
 	affiche_trait(c);
 	for (i=0; i<l; ++i) {
 		affiche_ligne(c, g.cellules[i]);
@@ -39,6 +41,7 @@ void debut_jeu(grille *g, grille *gc){
 			case '\n' : 
 			{ // touche "entree" pour évoluer
 				evolue(g,gc);
+				cptEvo++;
 				efface_grille(*g);
 				affiche_grille(*g);
 				break;

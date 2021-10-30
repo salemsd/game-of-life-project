@@ -10,7 +10,7 @@ grille.o: grille.c
 	gcc -g -Wall -c grille.c
 	
 dist:
-	tar -Jcvf SaoudiSalem-GoL-1.0.tar.xz Doxyfile makefile *.c *.h grilles
+	tar -Jcvf SaoudiSalem-GoL-2.0.tar.xz Doxyfile makefile *.c *.h grilles
 
 docs:
 	@doxygen ./Doxyfile
