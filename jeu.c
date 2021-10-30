@@ -32,6 +32,5 @@ void evolue (grille *g, grille *gc){
 			}
 		}
 	}
-
 	return;
 }
