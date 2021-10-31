@@ -30,50 +30,48 @@ void affiche_grille (grille g){
 }
 
 void efface_grille (grille g){
-	printf("\n\e[%dA",g.nbl*2 + 5); 
+	printf("\n\e[%dA",g.nbl*2 + 6); 
 }
 
 
 int (*compte_voisins_vivants)(int, int, grille) = calculNonCyclique; // initialisation du mode de calcul sur non cyclique
 
 void debut_jeu(grille *g, grille *gc){
+	int valider = 0;
 	char c = getchar(); 
 	while (c != 'q') // touche 'q' pour quitter
 	{ 
 		switch (c) {
 			case '\n' : 
 			{ // touche "entree" pour évoluer
-				evolue(g, gc);
-				cptEvo++;
-				efface_grille(*g);
-				affiche_grille(*g);
+				
+				if(valider == 0)
+				{
+					evolue(g, gc);
+					cptEvo++;
+					efface_grille(*g);
+					affiche_grille(*g);
+				}
+				else{ valider = 0; }
+
 				break;
+
 			}
 			case 'n' :
 			{ // touche "n" pour entrer le nom d'une nouvelle grille
-			    int length = 256;
-    			char * nomGrille = malloc(length * sizeof(char));
-    			int cpt = 0;
-				char c2;
-    			printf("Indiquer le chemin du fichier et son nom: ");
-				c2 = getchar();
-    			while(c2 != '\n')
-    			{
-        			nomGrille[cpt++] = c2;
-        			if (cpt == length)
-        			{
-    	    			length += 256;
-            			nomGrille = realloc(nomGrille, length);
-        			}
-        			c2 = getchar();
-    			}
-    			nomGrille[cpt] = '\0';
-
+				
+				cptEvo = 0;
+				char nomGrille[255];
+				printf("Chemin de la grille: \n");
+				scanf("%s", nomGrille);
+				printf("\n\n");
 				libere_grille(g);
 				init_grille_from_file(nomGrille, g);
-				free(nomGrille);
 				libere_grille(gc);
-				alloue_grille(g->nbl, g->nbc, gc);
+				alloue_grille (g->nbl, g->nbc, gc);
+				affiche_grille(*g);
+				valider = 1;
+				//printf("\n[%dA", g->nbl*2);
 
 				break;
 			}
@@ -82,13 +80,16 @@ void debut_jeu(grille *g, grille *gc){
 				if(compte_voisins_vivants == calculCyclique) // si cyclique, changer en non cyclique
 				{
 					compte_voisins_vivants = calculNonCyclique;
-					printf("Non cyclique\n");
+					printf("Non cyclique \n");
 				}
 				else // sinon changer en cyclique
 				{
 					compte_voisins_vivants = calculCyclique;
-					printf("Cyclique\n");
+					printf("Cyclique \n");
 				}
+
+				while(getchar() != '\n');
+				printf("\n\e[3A");
 				
 				break;
 			}
