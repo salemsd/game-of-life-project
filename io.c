@@ -15,7 +15,7 @@ void affiche_ligne (int c, int* ligne){
 	return;
 }
 
-int cptEvo = 0;
+int cptEvo = 0; // compteur du temps d'évolution
 void affiche_grille (grille g){
 	int i, l=g.nbl, c=g.nbc;
 	printf("\n");
@@ -33,6 +33,9 @@ void efface_grille (grille g){
 	printf("\n\e[%dA",g.nbl*2 + 5); 
 }
 
+
+int (*compte_voisins_vivants)(int, int, grille) = calculNonCyclique; // initialisation du mode de calcul sur non cyclique
+
 void debut_jeu(grille *g, grille *gc){
 	char c = getchar(); 
 	while (c != 'q') // touche 'q' pour quitter
@@ -40,7 +43,7 @@ void debut_jeu(grille *g, grille *gc){
 		switch (c) {
 			case '\n' : 
 			{ // touche "entree" pour évoluer
-				evolue(g,gc);
+				evolue(g, gc);
 				cptEvo++;
 				efface_grille(*g);
 				affiche_grille(*g);
@@ -74,6 +77,22 @@ void debut_jeu(grille *g, grille *gc){
 
 				break;
 			}
+			case 'c':
+			{
+				if(compte_voisins_vivants == calculCyclique) // si cyclique, changer en non cyclique
+				{
+					compte_voisins_vivants = calculNonCyclique;
+					printf("Non cyclique\n");
+				}
+				else // sinon changer en cyclique
+				{
+					compte_voisins_vivants = calculCyclique;
+					printf("Cyclique\n");
+				}
+				
+				break;
+			}
+			
 			default : 
 			{ // touche non traitée
 				printf("\n\e[1A");
