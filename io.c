@@ -7,10 +7,16 @@ void affiche_trait (int c){
 	return;
 }
 
+int vieillissement = 0; // vieillissement desactivé par défaut
 void affiche_ligne (int c, int* ligne){
 	int i;
 	for (i=0; i<c; ++i) 
-		if (ligne[i] == 0 ) printf ("|   "); else printf ("| O ");
+		if (ligne[i] == 0 ) { printf ("|   "); } 
+		else 
+		{
+			if(vieillissement) { printf ("| %d ", ligne[i]); }
+			else { 	printf ("| O "); }
+		}
 	printf("|\n");
 	return;
 }
@@ -86,6 +92,25 @@ void debut_jeu(grille *g, grille *gc){
 				{
 					compte_voisins_vivants = calculCyclique;
 					printf("Cyclique \n");
+				}
+
+				while(getchar() != '\n');
+				printf("\n\e[3A");
+				
+				break;
+			}
+
+			case 'v':
+			{
+				if(vieillissement) // si vieillissement actif, désactiver
+				{
+					vieillissement = 0;
+					printf("Vieillissement desactivé \n");
+				}
+				else // sinon activer
+				{
+					vieillissement = 1;
+					printf("Vieillissement activé \n");
 				}
 
 				while(getchar() != '\n');

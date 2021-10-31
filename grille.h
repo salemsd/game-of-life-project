@@ -45,8 +45,8 @@ static inline void set_morte(int i, int j, grille g){g.cellules[i][j] = 0;}
 /// @param i Ligne i de la grille
 /// @param j Colonne j de la grille
 /// @param g La grille @see grille
-/// @returns 0 si la cellule est morte, 1 si la cellule est vivante
-static inline int est_vivante(int i, int j, grille g){return g.cellules[i][j] == 1;}
+/// @returns 0 si la cellule est morte (= 0), 1 si la cellule est vivante (différent de 0)
+static inline int est_vivante(int i, int j, grille g){return g.cellules[i][j] != 0;}
 
 /// @brief Recopie la grille gs dans gd (sans allocation)
 /// @param gs La grille du début gs
