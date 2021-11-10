@@ -1,6 +1,6 @@
 bin/
+grilles/
 obj/
-*.tar.xz
 doc/
 .vscode/
-grilles/
+*.tar.xz
