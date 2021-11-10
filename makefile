@@ -1,19 +1,35 @@
-main: main.o grille.o io.o jeu.o
-	gcc -g -Wall -o main main.o grille.o io.o jeu.o
-main.o: main.c grille.h io.h jeu.h
-	gcc -g -Wall -c main.c
-io.o: io.c io.h grille.h jeu.h
-	gcc -g -Wall -c io.c
-jeu.o: jeu.c jeu.h grille.h
-	gcc -g -Wall -c jeu.c	
-grille.o: grille.c
-	gcc -g -Wall -c grille.c
+# Projet
+.PHONY: all dist docs clean
+
+CC = gcc
+CFLAGS += -g -Wall
+CPPFLAGS += -I include
+
+BIN_DIR = bin
+TARGET = $(BIN_DIR)/main
+
+vpath %.c src/
+vpath %.h include/
+
+OBJ_DIR = obj/
+OBJ = $(patsubst ./src/%.c,%.o,$(wildcard ./src/*.c))
+
+
+all: $(TARGET) 
+
+$(TARGET): $(addprefix $(OBJ_DIR),$(OBJ))
+	mkdir $(BIN_DIR)
+	$(CC) $(CFLAGS) -o $@ $^
+$(OBJ_DIR)%.o: %.c | $(OBJ_DIR)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
+$(OBJ_DIR):
+	mkdir $@	
 	
 dist:
-	tar -Jcvf SaoudiSalem-GoL-2.0.tar.xz Doxyfile makefile *.c *.h grilles
+	tar -Jcvf SaoudiSalem-GoL-5.0.tar.xz Doxyfile makefile src/ include/
 
 docs:
 	@doxygen ./Doxyfile
 
 clean:
-	rm *.o main
+	$(RM) -r doc/ $(OBJ_DIR) bin/

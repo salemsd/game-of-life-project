@@ -1,5 +1,6 @@
-main
-*.o
+bin/
+obj/
 *.tar.xz
-html/
+doc/
 .vscode/
+grilles/
