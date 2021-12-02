@@ -1,7 +1,0 @@
-bin/
-grilles/
-obj/
-doc/
-.vscode/
-*.tar.xz
-.gitignore
