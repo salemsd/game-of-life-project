@@ -26,7 +26,7 @@ $(OBJ_DIR):
 	mkdir $@	
 	
 dist:
-	tar -Jcvf SaoudiSalem-GoL-3.0.tar.xz Doxyfile makefile src/ include/
+	tar -Jcvf SaoudiSalem-GoL-4.0.tar.xz Doxyfile makefile src/ include/
 
 docs:
 	@doxygen ./Doxyfile
