@@ -41,12 +41,25 @@ static inline void set_vivante(int i, int j, grille g){g.cellules[i][j] = 1;}
 /// @param g La grille @see grille
 static inline void set_morte(int i, int j, grille g){g.cellules[i][j] = 0;}
 
+/// @brief Rend non-viable la cellule (i,j) de la grille g
+/// @param i Ligne i de la grille
+/// @param j Colonne j de la grille
+/// @param g La grille @see grille
+static inline void set_nonViable(int i, int j, grille g){g.cellules[i][j] = -1;}
+
 /// @brief Teste si la cellule (i,j) de la grille g est vivante
 /// @param i Ligne i de la grille
 /// @param j Colonne j de la grille
 /// @param g La grille @see grille
-/// @returns 0 si la cellule est morte (= 0), 1 si la cellule est vivante (différent de 0)
-static inline int est_vivante(int i, int j, grille g){return g.cellules[i][j] != 0;}
+/// @returns 0 si la cellule est morte (= 0), 1 si la cellule est vivante (supérieur ou égal à 0)
+static inline int est_vivante(int i, int j, grille g){return g.cellules[i][j] >= 1;}
+
+/// @brief Teste si la cellule (i,j) de la grille g est non-viable
+/// @param i Ligne i de la grille
+/// @param j Colonne j de la grille
+/// @param g La grille @see grille
+/// @returns 0 si la cellule est viable (!= -1), 1 si la cellule est non-viable (= -1)
+static inline int est_nonViable(int i, int j, grille g){return g.cellules[i][j] == -1;}
 
 /// @brief Recopie la grille gs dans gd (sans allocation)
 /// @param gs La grille du début gs

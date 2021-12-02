@@ -11,11 +11,12 @@ int vieillissement = 0; // vieillissement desactivé par défaut
 void affiche_ligne (int c, int* ligne){
 	int i;
 	for (i=0; i<c; ++i) 
-		if (ligne[i] == 0 ) { printf ("|   "); } 
+		if (ligne[i] == 0 ) { printf ("|   "); } // morte representé par un vide
+		else if (ligne[i] == -1) { printf("| X "); } // non-viable representé par un X
 		else 
 		{
-			if(vieillissement) { printf ("| %d ", ligne[i]); }
-			else { 	printf ("| O "); }
+			if(vieillissement) { printf ("| %d ", ligne[i]); } // si vieillissement actif afficher l'âge
+			else { 	printf ("| O "); } // sinon afficher O
 		}
 	printf("|\n");
 	return;

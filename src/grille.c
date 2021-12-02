@@ -6,6 +6,7 @@ void init_grille_from_file (char * filename, grille* g){
 	assert (pfile != NULL);
 	
 	int i,j,n,l,c,vivantes=0;
+	int nonViables = 0;
 	
 	fscanf(pfile, "%d", & l);
 	fscanf(pfile, "%d", & c);
@@ -17,6 +18,13 @@ void init_grille_from_file (char * filename, grille* g){
 		fscanf(pfile, "%d", & i);
 		fscanf(pfile, "%d", & j);
 		set_vivante(i,j,*g);
+	}
+
+	fscanf(pfile, "%d", & nonViables); // récupere le nombre de cellules non-viables
+	for (n=0; n< nonViables; ++n){
+		fscanf(pfile, "%d", & i); // récuperer ligne i de la cellule non-viable
+		fscanf(pfile, "%d", & j); // récuperer colonne j de la cellule non-viable
+		set_nonViable(i,j,*g); // cellule = -1
 	}
 	
 	fclose (pfile);
