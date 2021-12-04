@@ -77,7 +77,6 @@ void debut_jeu(grille *g, grille *gc)
 			if (valider == 0)
 			{
 				evolue(g, gc);
-				cptEvo++;
 				efface_grille(*g);
 				affiche_grille(*g);
 			}
@@ -159,10 +158,7 @@ void debut_jeu(grille *g, grille *gc)
 
 #endif
 
-//#ifdef GRAPHIQUE
-
-int vieillissement = 0;
-int (*compte_voisins_vivants)(int, int, grille) = calculNonCyclique; // initialisation du mode de calcul sur non cyclique
+#ifdef GRAPHIQUE
 
 void affiche_grille(cairo_surface_t *surface, grille g)
 {
@@ -173,12 +169,12 @@ void affiche_grille(cairo_surface_t *surface, grille g)
 	cairo_rectangle(cr, 0, 0, SIZE_GRILLE, SIZE_GRILLE);
 
 	cairo_set_source_rgb(cr, 0.86, 0.86, 0.86); // Blanc
-	cairo_set_line_width(cr, 1.5); // Epaisseur de la grille
+	cairo_set_line_width(cr, 1.5);				// Epaisseur de la grille
 
 	int i, j;
 	int l = g.nbl;
 	int c = g.nbc;
-	
+
 	for (i = 0; i < l; i++)
 	{
 		for (j = 0; j < c; j++)
@@ -232,8 +228,291 @@ void affiche_cellules(cairo_surface_t *surface, grille g)
 			}
 		}
 	}
-	
+
 	cairo_destroy(cr);
 }
 
-//#endif
+int cptEvo = 0;
+int vieillissement = 0;
+int (*compte_voisins_vivants)(int, int, grille) = calculNonCyclique; // initialisation du mode de calcul sur non cyclique
+
+void affiche_texte(cairo_surface_t *surface)
+{
+	cairo_t *cr;
+	cr = cairo_create(surface);
+
+	// Choisir la police et la taille du texte
+	cairo_select_font_face(cr, "Arial", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+	cairo_set_font_size(cr, 27.0);
+	cairo_set_source_rgb(cr, 1, 1, 1); // Blanc
+
+	// Afficher titre
+	cairo_move_to(cr, 670, 45);
+	cairo_show_text(cr, "Jeu de la vie");
+
+	// Afficher compteur d'évolution
+	char *cptEvoChar;
+	cptEvoChar = (char *)malloc(4 * sizeof(char));
+	// Cast int vers char*
+	sprintf(cptEvoChar, "%d", cptEvo);
+	cairo_set_font_size(cr, 22.0);
+	cairo_move_to(cr, 632, 120);
+	cairo_show_text(cr, "Evolution: ");
+	cairo_show_text(cr, cptEvoChar);
+	free(cptEvoChar);
+
+	// Afficher mode de voisinage
+	cairo_move_to(cr, 632, 180);
+	if (compte_voisins_vivants == calculNonCyclique)
+	{
+		cairo_show_text(cr, "Voisinage: Non cyclique");
+	}
+	else
+	{
+		cairo_show_text(cr, "Voisinage: Cyclique");
+	}
+
+	// Afficher vieillissement
+	cairo_move_to(cr, 632, 240);
+	if (vieillissement)
+	{
+		cairo_show_text(cr, "Vieillissement: Actif");
+	}
+	else
+	{
+		cairo_show_text(cr, "Vieillissement: Inactif");
+	}
+
+	// Afficher controles
+	cairo_move_to(cr, 655, 320);
+	cairo_set_font_size(cr, 24);
+	cairo_show_text(cr, "Contrôles du jeu");
+
+	cairo_move_to(cr, 628, 364);
+	cairo_set_font_size(cr, 17);
+	cairo_show_text(cr, "(Bouton gauche souris) Évoluer");
+	cairo_move_to(cr, 628, 404);
+	cairo_show_text(cr, "(c) Switch mode de voisinage");
+	cairo_move_to(cr, 628, 444);
+	cairo_show_text(cr, "(v) Switch vieillissement");
+	cairo_move_to(cr, 628, 484);
+	cairo_show_text(cr, "(n) Charger une autre grille");
+	cairo_move_to(cr, 628, 524);
+	cairo_show_text(cr, "(Bouton droit souris) Quitter");
+
+	// Afficher nom
+	cairo_move_to(cr, 738, 595);
+	cairo_set_font_size(cr, 10);
+	cairo_show_text(cr, "Projet TechDev - Salem SAOUDI");
+
+	cairo_destroy(cr);
+}
+
+void reset_affichage(cairo_surface_t *surface)
+{
+	cairo_t *cr;
+	cr = cairo_create(surface);
+
+	cairo_set_source_rgb(cr, 0, 0, 0);
+	cairo_paint(cr); // Peint l'arrière plan en noir
+
+	cairo_destroy(cr);
+}
+
+void reset_texte(cairo_surface_t *surface)
+{
+	cairo_t *cr;
+	cr = cairo_create(surface);
+
+	cairo_rectangle(cr, SIZE_GRILLE + 1.5, 0, (SIZEX - SIZE_GRILLE), SIZEY); // Rectangle qui recouvre la zone de texte
+	cairo_set_source_rgb(cr, 0, 0, 0);
+	cairo_fill(cr); // Remplir le rectangle en noir
+
+	cairo_destroy(cr);
+}
+
+void debut_jeu(grille *g, grille *gc, char* cheminGrille)
+{
+	// X11 display
+	Display *dpy;
+	Window rootwin;
+	Window win;
+	XEvent e;
+	int scr;
+
+	// init the display
+	if (!(dpy = XOpenDisplay(NULL)))
+	{
+		fprintf(stderr, "Erreur: impossible d'afficher la fenetre\n");
+		exit(1);
+	}
+
+	scr = DefaultScreen(dpy);
+	rootwin = RootWindow(dpy, scr);
+
+	win = XCreateSimpleWindow(dpy, rootwin, 1, 1, SIZEX, SIZEY, 0,
+							  BlackPixel(dpy, scr), BlackPixel(dpy, scr));
+
+	XStoreName(dpy, win, "Jeu de la vie");
+	XSelectInput(dpy, win, ExposureMask | ButtonPressMask | KeyPressMask);
+	XMapWindow(dpy, win);
+
+	// create cairo surface
+	cairo_surface_t *cs;
+	cs = cairo_xlib_surface_create(dpy, win, DefaultVisual(dpy, 0), SIZEX, SIZEY);
+
+	// run the event loop
+	int commencer = 0;
+	while (1)
+	{
+		XNextEvent(dpy, &e);
+
+		// Premier affichage de la fenetre
+		if (e.type == Expose && e.xexpose.count < 1)
+		{
+			if(commencer)
+			{
+				affiche_cellules(cs, *g);
+				affiche_grille(cs, *g);
+				affiche_texte(cs);
+			}
+			else
+			{
+				affiche_menu(cs, cheminGrille);
+			}	
+		}
+
+		// Boutons souris
+		// Bouton droit souris - quitter
+		else if (e.type == ButtonPress && e.xbutton.button == Button3)
+		{
+			break;
+		}
+		// Bouton gauche souris - évolution (ou commencer le jeu)
+		else if (e.type == ButtonPress && e.xbutton.button == Button1)
+		{
+			if(commencer) // Si on est déjà sorti du menu principal, on évolue
+			{
+				evolue(g, gc);
+				reset_affichage(cs);
+				affiche_cellules(cs, *g);
+				affiche_grille(cs, *g);
+				affiche_texte(cs);
+			}
+			else // Si on est toujours dans le menu principal, on affiche d'abord la grille sans évoluer
+			{
+				commencer = 1;
+				reset_affichage(cs);
+				affiche_cellules(cs, *g);
+				affiche_grille(cs, *g);
+				affiche_texte(cs);
+			}
+
+		}
+
+		// Touches clavier
+		// (c) - Switch voisinage cyclique et non cyclique
+		else if (e.type == KeyPress && e.xkey.keycode == 54 && commencer) // La condition commencer s'assure qu'on est sorti du menu principal
+		{
+			if (compte_voisins_vivants == calculCyclique) // si cyclique, changer en non cyclique
+			{
+				compte_voisins_vivants = calculNonCyclique;
+				reset_texte(cs);
+				affiche_texte(cs);
+			}
+			else // sinon changer en cyclique
+			{
+				compte_voisins_vivants = calculCyclique;
+				reset_texte(cs);
+				affiche_texte(cs);
+			}
+		}
+		// (v) - Switch activer/désactiver vieillissement
+		else if (e.type == KeyPress && e.xkey.keycode == 55 && commencer)
+		{
+			if (vieillissement) // si vieillissement actif, désactiver
+			{
+				vieillissement = 0;
+				reset_texte(cs);
+				affiche_texte(cs);
+			}
+			else // sinon activer
+			{
+				vieillissement = 1;
+				reset_texte(cs);
+				affiche_texte(cs);
+			}
+		}
+		// (n) - Charger une nouvelle grille
+		else if (e.type == KeyPress && e.xkey.keycode == 57)
+		{
+			reset_affichage(cs);
+			cptEvo = 0;
+			char nomGrille[255];
+			printf("Chemin de la grille: \n");
+			scanf("%s", nomGrille);
+			printf("\n\n");
+			libere_grille(g);
+			init_grille_from_file(nomGrille, g);
+			libere_grille(gc);
+			alloue_grille(g->nbl, g->nbc, gc);
+			if(commencer)
+			{
+				affiche_cellules(cs, *g);
+				affiche_grille(cs, *g);
+				affiche_texte(cs);
+			}
+			else
+			{
+				affiche_menu(cs, nomGrille);
+			}
+		}
+	}
+
+	cairo_surface_destroy(cs); // destroy cairo surface
+	XCloseDisplay(dpy);		   // close the display
+}
+
+
+void affiche_menu(cairo_surface_t *surface, char* cheminGrille)
+{
+	cairo_t *cr;
+	cr = cairo_create(surface);
+
+	// Choisir la police et la taille du texte
+	cairo_select_font_face(cr, "Arial", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+	cairo_set_font_size(cr, 50.0);
+	cairo_set_source_rgb(cr, 1, 1, 1); // Blanc
+
+	// Afficher titre
+	cairo_move_to(cr, 300, 100);
+	cairo_show_text(cr, "Jeu de la vie");
+
+	// Afficher le chemin de la grille chargée
+	cairo_move_to(cr, 240, 250);
+	cairo_set_font_size(cr, 20.0);
+	cairo_show_text(cr, "Vous avez chargé la grille: ");
+	cairo_show_text(cr, cheminGrille);
+
+	// Afficher les controles
+	cairo_move_to(cr, 290, 390);
+	cairo_set_font_size(cr, 17.5);
+	cairo_show_text(cr, "(Bouton gauche souris) Commencer");
+
+	cairo_move_to(cr, 320, 430);
+	cairo_set_font_size(cr, 17.5);
+	cairo_show_text(cr, "(Bouton droit souris) Quitter");
+
+	cairo_move_to(cr, 325, 470);
+	cairo_set_font_size(cr, 17.5);
+	cairo_show_text(cr, "(n) Charger une autre grille");
+
+	// Afficher nom
+	cairo_move_to(cr, 738, 595);
+	cairo_set_font_size(cr, 10);
+	cairo_show_text(cr, "Projet TechDev - Salem SAOUDI");
+
+	cairo_destroy(cr);
+}
+
+#endif

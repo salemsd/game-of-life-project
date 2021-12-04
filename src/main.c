@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 
 	if (argc != 2)
 	{
-		printf("usage : main <fichier grille>");
+		printf("usage : ./bin/main <chemin du fichier grille>");
 		return 1;
 	}
 
@@ -29,55 +29,11 @@ int main(int argc, char **argv)
 
 #endif
 
-//#ifdef GRAPHIQUE
+#ifdef GRAPHIQUE
 
-	// X11 display
-	Display *dpy;
-	Window rootwin;
-	Window win;
-	XEvent e;
-	int scr;
+	debut_jeu(&g, &gc, argv[1]);
 
-	// init the display
-	if (!(dpy = XOpenDisplay(NULL)))
-	{
-		fprintf(stderr, "Erreur: impossible d'afficher la fenetre\n");
-		exit(1);
-	}
-
-	scr = DefaultScreen(dpy);
-	rootwin = RootWindow(dpy, scr);
-
-	win = XCreateSimpleWindow(dpy, rootwin, 1, 1, SIZEX, SIZEY, 0,
-							  BlackPixel(dpy, scr), BlackPixel(dpy, scr));
-
-	XStoreName(dpy, win, "Jeu de la vie - SAOUDI Salem");
-	XSelectInput(dpy, win, ExposureMask | ButtonPressMask | KeyPressMask);
-	XMapWindow(dpy, win);
-
-	// create cairo surface
-	cairo_surface_t *cs;
-	cs = cairo_xlib_surface_create(dpy, win, DefaultVisual(dpy, 0), SIZEX, SIZEY);
-
-	// run the event loop
-	while (1)
-	{
-		XNextEvent(dpy, &e);
-		if (e.type == Expose && e.xexpose.count < 1)
-		{
-	
-			affiche_cellules(cs, g);
-			affiche_grille(cs, g);
-
-		}
-		else if (e.type == ButtonPress)
-			break;
-	}
-
-	cairo_surface_destroy(cs); // destroy cairo surface
-	XCloseDisplay(dpy);		   // close the display
-
-//#endif
+#endif
 
 	libere_grille(&g);
 	libere_grille(&gc);

@@ -23,16 +23,16 @@ MODEFLAGS = -D$(MODE)
 all: $(TARGET) 
 
 $(TARGET): $(addprefix $(OBJ_DIR),$(OBJ))
-	mkdir $(BIN_DIR)
+	mkdir -p $(BIN_DIR)
 	$(CC) $(MODEFLAGS) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS) 
 	@echo "\nUsage: ./bin/main grilles/grille<num>.txt\n"
 $(OBJ_DIR)%.o: %.c | $(OBJ_DIR)
 	$(CC) $(MODEFLAGS) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 $(OBJ_DIR):
-	mkdir $@	
+	mkdir -p $@	
 	
 dist:
-	mkdir $@
+	mkdir -p $@
 	tar -Jcvf dist/SaoudiSalem-GoL-4.0.tar.xz Doxyfile makefile src/ include/
 
 docs:

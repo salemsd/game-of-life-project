@@ -40,9 +40,11 @@ int calculNonCyclique(int i, int j, grille g)
 }
 
 extern int vieillissement; // Déclaration de la variable de vieillissement définie dans io.c
+extern int cptEvo; // Déclaration de la variable compteur d'évolution définie dans io.c
 
-void evolue (grille *g, grille *gc){
-	
+void evolue (grille *g, grille *gc)
+{
+	cptEvo++;	
 	copie_grille (*g,*gc); // copie temporaire de la grille
 	int i,j,l=g->nbl, c = g->nbc,v;
 	for (i=0; i<l; i++)
