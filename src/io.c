@@ -1,132 +1,239 @@
+
 #include "io.h"
 
-void affiche_trait (int c){
+#if TEXTE
+
+void affiche_trait(int c)
+{
 	int i;
-	for (i=0; i<c; ++i) printf ("|---");
+	for (i = 0; i < c; ++i)
+		printf("|---");
 	printf("|\n");
 	return;
 }
 
 int vieillissement = 0; // vieillissement desactivé par défaut
-void affiche_ligne (int c, int* ligne){
+void affiche_ligne(int c, int *ligne)
+{
 	int i;
-	for (i=0; i<c; ++i) 
-		if (ligne[i] == 0 ) { printf ("|   "); } // morte representé par un vide
-		else if (ligne[i] == -1) { printf("| X "); } // non-viable representé par un X
-		else 
+	for (i = 0; i < c; ++i)
+		if (ligne[i] == 0)
 		{
-			if(vieillissement) { printf ("| %d ", ligne[i]); } // si vieillissement actif afficher l'âge
-			else { 	printf ("| O "); } // sinon afficher O
+			printf("|   ");
+		} // morte representé par un vide
+		else if (ligne[i] == -1)
+		{
+			printf("| X ");
+		} // non-viable representé par un X
+		else
+		{
+			if (vieillissement)
+			{
+				printf("| %d ", ligne[i]);
+			} // si vieillissement actif afficher l'âge
+			else
+			{
+				printf("| O ");
+			} // sinon afficher O
 		}
 	printf("|\n");
 	return;
 }
 
+void efface_grille(grille g)
+{
+	printf("\n\e[%dA", g.nbl * 2 + 6);
+}
+
 int cptEvo = 0; // compteur du temps d'évolution
-void affiche_grille (grille g){
-	int i, l=g.nbl, c=g.nbc;
+void affiche_grille(grille g)
+{
+	int i, l = g.nbl, c = g.nbc;
 	printf("\n");
 	printf("Temps d'évolution: %d\n", cptEvo);
 	affiche_trait(c);
-	for (i=0; i<l; ++i) {
+	for (i = 0; i < l; ++i)
+	{
 		affiche_ligne(c, g.cellules[i]);
 		affiche_trait(c);
-	}	
-	printf("\n"); 
+	}
+	printf("\n");
 	return;
 }
 
-void efface_grille (grille g){
-	printf("\n\e[%dA",g.nbl*2 + 6); 
-}
-
-
 int (*compte_voisins_vivants)(int, int, grille) = calculNonCyclique; // initialisation du mode de calcul sur non cyclique
 
-void debut_jeu(grille *g, grille *gc){
+void debut_jeu(grille *g, grille *gc)
+{
 	int valider = 0;
-	char c = getchar(); 
+	char c = getchar();
 	while (c != 'q') // touche 'q' pour quitter
-	{ 
-		switch (c) {
-			case '\n' : 
-			{ // touche "entree" pour évoluer
-				
-				if(valider == 0)
-				{
-					evolue(g, gc);
-					cptEvo++;
-					efface_grille(*g);
-					affiche_grille(*g);
-				}
-				else{ valider = 0; }
+	{
+		switch (c)
+		{
+		case '\n':
+		{ // touche "entree" pour évoluer
 
-				break;
-
-			}
-			case 'n' :
-			{ // touche "n" pour entrer le nom d'une nouvelle grille
-				
-				cptEvo = 0;
-				char nomGrille[255];
-				printf("Chemin de la grille: \n");
-				scanf("%s", nomGrille);
-				printf("\n\n");
-				libere_grille(g);
-				init_grille_from_file(nomGrille, g);
-				libere_grille(gc);
-				alloue_grille (g->nbl, g->nbc, gc);
+			if (valider == 0)
+			{
+				evolue(g, gc);
+				cptEvo++;
+				efface_grille(*g);
 				affiche_grille(*g);
-				valider = 1;
-				//printf("\n[%dA", g->nbl*2);
-
-				break;
 			}
-			case 'c':
+			else
 			{
-				if(compte_voisins_vivants == calculCyclique) // si cyclique, changer en non cyclique
-				{
-					compte_voisins_vivants = calculNonCyclique;
-					printf("Non cyclique \n");
-				}
-				else // sinon changer en cyclique
-				{
-					compte_voisins_vivants = calculCyclique;
-					printf("Cyclique \n");
-				}
-
-				while(getchar() != '\n');
-				printf("\n\e[3A");
-				
-				break;
+				valider = 0;
 			}
 
-			case 'v':
+			break;
+		}
+		case 'n':
+		{ // touche "n" pour entrer le nom d'une nouvelle grille
+
+			cptEvo = 0;
+			char nomGrille[255];
+			printf("Chemin de la grille: \n");
+			scanf("%s", nomGrille);
+			printf("\n\n");
+			libere_grille(g);
+			init_grille_from_file(nomGrille, g);
+			libere_grille(gc);
+			alloue_grille(g->nbl, g->nbc, gc);
+			affiche_grille(*g);
+			valider = 1;
+			//printf("\n[%dA", g->nbl*2);
+
+			break;
+		}
+		case 'c':
+		{
+			if (compte_voisins_vivants == calculCyclique) // si cyclique, changer en non cyclique
 			{
-				if(vieillissement) // si vieillissement actif, désactiver
-				{
-					vieillissement = 0;
-					printf("Vieillissement desactivé \n");
-				}
-				else // sinon activer
-				{
-					vieillissement = 1;
-					printf("Vieillissement activé \n");
-				}
-
-				while(getchar() != '\n');
-				printf("\n\e[3A");
-				
-				break;
+				compte_voisins_vivants = calculNonCyclique;
+				printf("Non cyclique \n");
 			}
-			
-			default : 
-			{ // touche non traitée
-				printf("\n\e[1A");
-				break;
+			else // sinon changer en cyclique
+			{
+				compte_voisins_vivants = calculCyclique;
+				printf("Cyclique \n");
+			}
+
+			while (getchar() != '\n')
+				;
+			printf("\n\e[3A");
+
+			break;
+		}
+
+		case 'v':
+		{
+			if (vieillissement) // si vieillissement actif, désactiver
+			{
+				vieillissement = 0;
+				printf("Vieillissement desactivé \n");
+			}
+			else // sinon activer
+			{
+				vieillissement = 1;
+				printf("Vieillissement activé \n");
+			}
+
+			while (getchar() != '\n')
+				;
+			printf("\n\e[3A");
+
+			break;
+		}
+
+		default:
+		{ // touche non traitée
+			printf("\n\e[1A");
+			break;
+		}
+		}
+		c = getchar();
+	}
+	return;
+}
+
+#endif
+
+//#ifdef GRAPHIQUE
+
+int vieillissement = 0;
+int (*compte_voisins_vivants)(int, int, grille) = calculNonCyclique; // initialisation du mode de calcul sur non cyclique
+
+void affiche_grille(cairo_surface_t *surface, grille g)
+{
+	// créer un mask et cibler la surface
+	cairo_t *cr;
+	cr = cairo_create(surface);
+
+	cairo_rectangle(cr, 0, 0, SIZE_GRILLE, SIZE_GRILLE);
+
+	cairo_set_source_rgb(cr, 0.86, 0.86, 0.86); // Blanc
+	cairo_set_line_width(cr, 1.5); // Epaisseur de la grille
+
+	int i, j;
+	int l = g.nbl;
+	int c = g.nbc;
+	
+	for (i = 0; i < l; i++)
+	{
+		for (j = 0; j < c; j++)
+		{
+			cairo_move_to(cr, ((SIZE_GRILLE * i) / l), 0);
+			cairo_line_to(cr, ((SIZE_GRILLE * i) / l), SIZE_GRILLE);
+			cairo_move_to(cr, 0, ((SIZE_GRILLE * j) / c));
+			cairo_line_to(cr, SIZE_GRILLE, ((SIZE_GRILLE * j) / c));
+		}
+	}
+
+	cairo_stroke(cr);
+
+	cairo_destroy(cr); // destroy cairo mask
+}
+
+void affiche_cellules(cairo_surface_t *surface, grille g)
+{
+	cairo_t *cr;
+	cr = cairo_create(surface);
+
+	int i, j;
+	int l = g.nbl;
+	int c = g.nbc;
+
+	for (i = 0; i < g.nbl; i++)
+	{
+		for (j = 0; j < g.nbc; j++)
+		{
+			// Créer un rectangle pour chaque cellule de la grille
+			cairo_rectangle(cr, ((SIZE_GRILLE * i) / l), ((SIZE_GRILLE * j) / c), SIZE_GRILLE / l, SIZE_GRILLE / c);
+
+			// Le remplir avec une couleur selon son état (pour chaque cellule)
+			if (!est_nonViable(i, j, g)) // Si la cellule est viable
+			{
+				if (est_vivante(i, j, g)) // Cellule vivante
+				{
+					cairo_set_source_rgb(cr, 0.52, 0.78, 0.1); // Jaune
+					cairo_fill(cr);
+				}
+				else // Cellule morte
+				{
+					cairo_set_source_rgb(cr, 0.1, 0.1, 0.1); // Gris foncé
+					cairo_fill(cr);
+				}
+			}
+			else // Si la cellule est non-viable
+			{
+				cairo_set_source_rgb(cr, 0.42, 0.1, 0.15);
+				cairo_fill(cr);
 			}
 		}
-		c = getchar(); 
 	}
-	return;	
+	
+	cairo_destroy(cr);
 }
+
+//#endif
