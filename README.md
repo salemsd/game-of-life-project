@@ -11,4 +11,4 @@ Commandes:
 - make docs: Genere la documentation html dans un dossier docs
 
 Après compilation:
-- Execution: ./bin/main <chemin de la grille.txt>
+- Execution: ./bin/main chemin de la grille.txt

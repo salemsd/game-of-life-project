@@ -115,29 +115,44 @@ int grille_oscillante(grille g)
 	int i;
 	int l = g.nbl, c = g.nbc;
 
-	grille temp, tempc; // temp: grille pour les test, tempc: grille pour l'évolution
+	// tempEvo: copie qui évoluera à chaque pas
+	// tempEvo2: copie qui évoluera chaque 1000 pas
+	// temp: pour la fonction evolue
+	grille temp, tempEvo, tempEvo2;
 
 	alloue_grille(l, c, &temp);
-	alloue_grille(l, c, &tempc);
-	copie_grille(g, temp);
+	alloue_grille(l, c, &tempEvo);
+	alloue_grille(l, c, &tempEvo2);
+	copie_grille(g, tempEvo);
+	copie_grille(g, tempEvo2);
 
-	int periodeMax = 1000; // on ne teste plus au dela de 1000
+	int max = 1000; // L'oscillation ne sera plus testée au dela de 1000 pas ET la grille n'évoluera plus au dela de 1000 évolutions
 
 	int periode = 0;
 	int identique = 0;
-	for(i = 0; i < periodeMax; ++i)
+	for (i = 0; i < max; i++)
 	{
-		evolue(&temp, &tempc, &periode); // On évolue la grille temporaire
+		while(periode < max && !identique) // Si les deux grilles sont identiques, sors de la boucle
+		{
+			evolue(&tempEvo, &temp, &periode); // On évolue la grille temporaire
 		
-		if (vide(temp)) { return -1; } // Pour éviter de tester deux grilles vides identiques. Si elle est vide c'est qu'elle n'oscille pas 
+			if (vide(tempEvo)) { return -1; } // Pour éviter de tester deux grilles vides identiques. Si elle est vide c'est qu'elle n'oscille pas 
 		
-		identique = cellules_identiques(g, temp);
+			identique = cellules_identiques(tempEvo2, tempEvo);
+		}
 
-		if(identique) { break; } // Si les deux grilles sont identiques, sors de la boucle
+		if(!identique) // Si on n'a pas trouvé d'oscillation pour la grille initiale, on l'évolue et on recommence
+		{
+			evolue(&tempEvo2, &temp, &periode); // évolue la grille initiale d'un pas
+			periode = 0; // reset la période
+			copie_grille(tempEvo2, tempEvo); // copie la grille initiale évoluée dans tempEvo
+		}
+		else { break; }
 	}
 
 	libere_grille(&temp);
-	libere_grille(&tempc);
+	libere_grille(&tempEvo);
+	libere_grille(&tempEvo2);
 
 	if(identique) { return periode; }
 	else { return -1; }
