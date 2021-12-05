@@ -15,7 +15,7 @@ static inline int modulo(int i, int m) {return (i+m)%m;}
 /// @brief Fait évoluer la grille g d'un pas de temps
 /// @param g Pointeur de type grille vers la grille g à faire évoluer
 /// @param gc Pointeur de type grille vers gc, copie temporaire de la grille g pour calculer le voisinage
-void evolue (grille *g, grille *gc);
+void evolue (grille *g, grille *gc, int* cptEvo);
 
 /// @brief Calcul du voisinage cyclique
 /// @param i Ligne i de la grille g

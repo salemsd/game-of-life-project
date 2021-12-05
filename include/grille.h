@@ -66,4 +66,11 @@ static inline int est_nonViable(int i, int j, grille g){return g.cellules[i][j] 
 /// @param gd La grille de destination gd
 void copie_grille (grille gs, grille gd);
 
+/// @brief Teste si une grille est identique à une autre grille
+/// @param g La grille à comparer
+/// @param gc La deuxième grille à comparer
+int cellules_identiques(grille g, grille gc);
+
+int grille_oscillante(grille g);
+
 #endif
