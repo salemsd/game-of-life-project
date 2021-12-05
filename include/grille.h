@@ -69,8 +69,12 @@ void copie_grille (grille gs, grille gd);
 /// @brief Teste si une grille est identique à une autre grille
 /// @param g La grille à comparer
 /// @param gc La deuxième grille à comparer
+/// @returns 0 si les deux grilles ne sont pas identiques, 1 sinon
 int cellules_identiques(grille g, grille gc);
 
+/// @brief Teste si une grille est oscillante
+/// @param g La grille à tester
+/// @returns Le nombre de pas si elle est oscillante, -1 sinon
 int grille_oscillante(grille g);
 
 #endif

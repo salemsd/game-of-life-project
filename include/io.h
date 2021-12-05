@@ -72,6 +72,7 @@ void affiche_menu(cairo_surface_t *surface, char* cheminGrille);
 /// @brief Débute le jeu
 /// @param g Pointeur de type grille vers la grille g
 /// @param gc Pointeur de type grille vers la grille gc @see evolue
+/// @param cheminGrille pointeur char vers la chaine de caractere avec le chemin de la grille
 void debut_jeu(grille *g, grille *gc, char* cheminGrille);
 
 #endif

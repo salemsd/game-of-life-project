@@ -366,6 +366,22 @@ void reset_texte(cairo_surface_t *surface)
 	cairo_destroy(cr);
 }
 
+void affiche_nouvelle(cairo_surface_t *surface)
+{
+	cairo_t *cr;
+	cr = cairo_create(surface);
+
+	cairo_select_font_face(cr, "Arial", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+	cairo_set_font_size(cr, 25.0);
+	cairo_set_source_rgb(cr, 1, 1, 1); // Blanc
+
+	// Afficher message
+	cairo_move_to(cr, 200, 200);
+	cairo_show_text(cr, "Veuillez entrer le chemin de la nouvelle grille dans le terminal");
+
+	cairo_destroy(cr);	
+}
+
 void debut_jeu(grille *g, grille *gc, char* cheminGrille)
 {
 	// X11 display

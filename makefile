@@ -30,11 +30,11 @@ MODEFLAGS = -D$(MODE)
 
 all: $(TARGET) 
 
-$(LIB): $(addprefix $(OBJ_DIR),$(OBJ))
+$(LIB): $(OBJ_DIR)jeu.o $(OBJ_DIR)grille.o
 	mkdir -p $(LIB_DIR)
 	ar rcv $(LIB) $^
 	ranlib $(LIB)
-$(TARGET): $(LIB)
+$(TARGET): $(OBJ_DIR)main.o $(OBJ_DIR)io.o $(LIB) 
 	mkdir -p $(BIN_DIR)
 	$(CC) $(MODEFLAGS) $(CPPFLAGS) $(CFLAGS) -o $@ $^ -ljeu -L$(LIB_DIR) $(LDFLAGS) 
 	@echo "\nUsage: ./bin/main grilles/grille<num>.txt\n"
@@ -45,10 +45,10 @@ $(OBJ_DIR):
 	
 dist:
 	mkdir -p $@
-	tar -Jcvf dist/SaoudiSalem-GoL-5.0.tar.xz Doxyfile makefile src/ include/
+	tar -Jcvf dist/SaoudiSalem-GoL-5.1.tar.xz Doxyfile makefile src/ include/ grilles/
 
 docs:
 	@doxygen ./Doxyfile
 
 clean:
-	$(RM) -r doc/ dist/ $(OBJ_DIR)/ $(BIN_DIR)/ $(LIB_DIR)/
+	$(RM) -r doc/ dist/ $(OBJ_DIR) $(BIN_DIR)/ $(LIB_DIR)/
