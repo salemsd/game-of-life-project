@@ -45,7 +45,7 @@ $(OBJ_DIR):
 	
 dist:
 	mkdir -p $@
-	tar -Jcvf dist/SaoudiSalem-GoL-5.1.tar.xz Doxyfile makefile src/ include/ grilles/
+	tar -Jcvf dist/GoL-5.1.tar.xz Doxyfile makefile src/ include/ grilles/
 
 docs:
 	@doxygen ./Doxyfile
