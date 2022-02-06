@@ -1,4 +1,6 @@
-13/10/2021 - TP TechDev Jeu de la vie - Unistra S3 Informatique
+College project - Conway's Game of Life using C
+
+Projet TechDev Jeu de la vie L2 Informatique
 
 Système de versionnement:
 - Niveau x: x.0 / Exemple: 2.0 - Niveau 2
@@ -11,5 +13,12 @@ Commandes:
 - make dist: Crée une archive .tar.xz avec les include, src, Doxyfile et makefile
 - make docs: Genere la documentation html dans un dossier docs
 
-Après compilation:
-- Execution: ./bin/main chemin de la grille.txt
+Commands:
+- make: Compiles the game in GUI mode
+- make MODE=TEXTE: Compiles the game in terminal mode
+- make clean: Cleans all unnecessary files (obj, doc, bin, dist)
+- make dist: Creates a .tar.xz archive with the code, the Doxyfile, and the makefile
+- make docs: Generates html documentation in a doc folder
+
+Execution:
+- ./bin/main grilles/grille{num}.txt
